@@ -1,0 +1,30 @@
+### Configure the Ubuntu Server
+- On Oracle VM Box, select the Virtual Machine as 'Bridge'.
+- Download the Ubuntu Server ISO from the official Ubuntu site.
+- Configure on a Virtual Box Machine as:
+  - Your Name: UbuntuLab
+  - Your Server Name: Wazuh
+  - Pick a Server Username: wazuhadm  
+  https://github.com/AbnerStier/Wazuh-Lab/blob/main/images/ubuntu-wazuhconfig.png?raw=true
+
+- Install Wazuh on Ubuntu Server using the script:
+  curl -sO https://packages.wazuh.com/4.14/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
+
+### Or use a pre-made Virtual Machine box in the 'Wazuh Installation Alternatives' section.
+  https://github.com/AbnerStier/Wazuh-Lab/blob/main/images/wazuh-OVA.png
+
+### After the installation type 'ip -a' to get the Wazuh IP to access the dashboard
+  https://github.com/AbnerStier/Wazuh-Lab/blob/main/images/wazuh-ip-a.png
+
+---
+
+### Deploy an Agent
+#### After accessing the Dashboard we will need to deploy the agent on the Windows AD Server
+- Navigate to the 'Agents Summary' -> 'Deploy New Agent' -> 'Assign Server Address'. It will be the same as Wazuh.
+- Assign an Agent Name: Windows-AD
+
+- Go to the Windows Server -> Open PowerShell as Administrator -> Run the command:
+  Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.14.5-1.msi -OutFile $env:tmp\wazuh-agent; msiexec.exe /i $env:tmp\wazuh-agent /q WAZUH_MANAGER='(the IP of the Wazuh Server Address)' WAZUH_AGENT_GROUP='default' WAZUH_AGENT_NAME='Windows-AD'
+
+- Finish with:
+  NET START Wazuh
